@@ -2,6 +2,7 @@ import { Navigation } from "@/components/navigation"
 import { Badge } from "@/components/ui/badge"
 import { CalendarDays, Clock, User, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 // This would typically come from a CMS or database
 const getBlogPost = (slug: string) => {
@@ -46,16 +47,16 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <main className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Post Not Found</h1>
-          <p className="text-muted-foreground mb-8">The blog post you're looking for doesn't exist.</p>
-          <Button asChild>
-            <a href="/blog">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Post Not Found</h1>
+          <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
+          <Button asChild className="bg-green-600 hover:bg-green-700 text-white">
+            <Link href="/blog">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Blog
-            </a>
+            </Link>
           </Button>
         </main>
       </div>
@@ -63,26 +64,24 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <Button variant="ghost" asChild className="mb-8">
-            <a href="/blog">
+          <Button variant="ghost" asChild className="mb-8 text-gray-600 hover:text-green-600 hover:bg-green-50">
+            <Link href="/blog">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Blog
-            </a>
+            </Link>
           </Button>
 
           <article>
             <header className="mb-8">
-              <Badge variant="secondary" className="mb-4">
-                {post.category}
-              </Badge>
-              <h1 className="text-4xl font-bold text-foreground mb-4">{post.title}</h1>
+              <Badge className="mb-4 bg-green-100 text-green-700 hover:bg-green-200">{post.category}</Badge>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
 
-              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-6 text-sm text-gray-500">
                 <div className="flex items-center">
                   <User className="h-4 w-4 mr-1" />
                   {post.author}
@@ -99,7 +98,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </header>
 
             <div
-              className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-pre:bg-muted prose-code:text-primary"
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-pre:bg-gray-100 prose-code:text-green-600 prose-a:text-green-600 hover:prose-a:text-green-700"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
           </article>
