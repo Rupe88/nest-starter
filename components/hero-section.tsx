@@ -92,7 +92,7 @@ export function HeroSection() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">NestJS</h3>
-                    <p className="text-sm text-muted-foreground">Enterprise-grade framework</p>
+                    <p className="text-sm text-card-foreground">Enterprise-grade framework</p>
                   </div>
                 </div>
               </Card>
@@ -105,7 +105,7 @@ export function HeroSection() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">2FA Auth</h3>
-                    <p className="text-sm text-muted-foreground">Authenticator integration</p>
+                    <p className="text-sm text-card-foreground">Authenticator integration</p>
                   </div>
                 </div>
               </Card>
@@ -118,7 +118,7 @@ export function HeroSection() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">Docker</h3>
-                    <p className="text-sm text-muted-foreground">Production deployment</p>
+                    <p className="text-sm text-card-foreground">Production deployment</p>
                   </div>
                 </div>
               </Card>
@@ -131,7 +131,7 @@ export function HeroSection() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">PostgreSQL</h3>
-                    <p className="text-sm text-muted-foreground">TypeORM integration</p>
+                    <p className="text-sm text-card-foreground">TypeORM integration</p>
                   </div>
                 </div>
               </Card>
