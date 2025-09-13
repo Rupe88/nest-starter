@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
@@ -67,11 +69,20 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8">
+              <Button
+                size="lg"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8"
+                onClick={() => window.open("https://github.com/Rupe88/TImer-Daju", "_blank")}
+              >
                 <Zap className="h-5 w-5 mr-2" />
                 Get NestBoost
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg px-8 bg-transparent"
+                onClick={() => (window.location.href = "/demo")}
+              >
                 View Demo
               </Button>
             </div>

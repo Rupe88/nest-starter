@@ -30,20 +30,16 @@ export function PricingSection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Starter Package */}
+          {/* Starter Package - Made this tier free */}
           <Card className="relative border-border hover:border-primary/50 transition-colors">
             <CardHeader className="text-center pb-8">
               <CardTitle className="text-2xl">Starter</CardTitle>
               <CardDescription>Perfect for side projects and MVPs</CardDescription>
               <div className="space-y-2">
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-3xl font-bold text-foreground">$149</span>
-                  <div className="text-sm text-muted-foreground">
-                    <div className="line-through">$249</div>
-                    <div className="text-accent font-medium">$100 off</div>
-                  </div>
+                  <span className="text-3xl font-bold text-accent">FREE</span>
                 </div>
-                <p className="text-sm text-muted-foreground">One-time payment. Build unlimited projects!</p>
+                <p className="text-sm text-muted-foreground">Open source. Build unlimited projects!</p>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -74,17 +70,17 @@ export function PricingSection() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="h-4 w-4 text-accent flex-shrink-0" />
-                  <span className="text-sm">Email support</span>
+                  <span className="text-sm">Community support</span>
                 </div>
               </div>
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={() => handleGumroadPurchase("nestboost-starter")}
+                className="w-full bg-accent hover:bg-accent/90"
+                onClick={() => window.open("https://github.com/Rupe88/TImer-Daju", "_blank")}
               >
                 <Zap className="h-4 w-4 mr-2" />
-                Get Starter
+                Get Free Starter
               </Button>
             </CardFooter>
           </Card>
