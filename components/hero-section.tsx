@@ -1,9 +1,89 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { Shield, Zap, Database, Dock as Docker, Code2, Clock, CheckCircle } from "lucide-react"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import {
+  Shield,
+  Zap,
+  Database,
+  Container,
+  Code2,
+  Clock,
+  CheckCircle,
+  Copy,
+  Check,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+// Terminal Card Component
+function TerminalCard() {
+  const [copied, setCopied] = useState(false);
+
+  const commands = [
+    'git clone https://github.com/nestboost/starter.git',
+    'cd nestboost-starter',
+    'pnpm install',
+    'docker-compose up -d',
+    'pnpm run start:dev',
+  ];
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(commands.join('\n'));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <Card className="mt-6 p-0 bg-gray-900 border-gray-700 font-mono overflow-hidden shadow-2xl">
+      {/* Terminal Header */}
+      <div className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+        <div className="flex gap-1.5">
+          <div className="h-3 w-3 rounded-full bg-red-500" />
+          <div className="h-3 w-3 rounded-full bg-yellow-500" />
+          <div className="h-3 w-3 rounded-full bg-green-500" />
+        </div>
+        <div className="text-gray-300 text-sm font-semibold ml-2">
+          terminal — nestboost-starter
+        </div>
+        <button
+          onClick={handleCopy}
+          className="ml-auto p-1.5 rounded hover:bg-gray-700 transition-colors"
+          title="Copy to clipboard"
+        >
+          {copied ? (
+            <Check className="h-4 w-4 text-green-400" />
+          ) : (
+            <Copy className="h-4 w-4 text-gray-400 hover:text-gray-300" />
+          )}
+        </button>
+      </div>
+
+      {/* Terminal Content */}
+      <div className="p-4 bg-gray-900">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-xs text-gray-400 mb-4">
+            <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+            <span>Ready to use</span>
+          </div>
+          <div className="space-y-1">
+            {commands.map((command, index) => (
+              <div key={index} className="flex items-start gap-2">
+                <span className="text-green-400 select-none">$</span>
+                <span className="text-green-300 break-all">{command}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 mt-4 pt-2 border-t border-gray-800">
+            <span className="text-green-400 select-none">$</span>
+            <span className="text-green-400 animate-pulse">_</span>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 export function HeroSection() {
   return (
@@ -22,20 +102,23 @@ export function HeroSection() {
               </Badge>
 
               <h1 className="text-4xl lg:text-6xl font-bold text-balance leading-tight">
-                Ship Secure <span className="text-primary">NestJS</span> Backends{" "}
-                <span className="text-accent">Faster</span>
+                Ship Secure <span className="text-primary">NestJS</span>{' '}
+                Backends <span className="text-accent">Faster</span>
               </h1>
 
               <p className="text-xl text-muted-foreground text-pretty max-w-2xl">
-                Production-ready NestJS boilerplates with 2FA authentication, Docker, TypeORM, and PostgreSQL. Skip the
-                repetitive setup and focus on building your core features.
+                Production-ready NestJS boilerplates with 2FA authentication,
+                Docker, TypeORM, and PostgreSQL. Skip the repetitive setup and
+                focus on building your core features.
               </p>
             </div>
 
             {/* Time Savings Breakdown */}
             <Card className="p-6 bg-card/50 border-primary/20">
               <div className="space-y-3">
-                <h3 className="font-semibold text-foreground mb-4">Time saved with NestBoost:</h3>
+                <h3 className="font-semibold text-foreground mb-4">
+                  Time saved with NestBoost:
+                </h3>
                 <div className="grid gap-2 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="h-4 w-4 text-accent" />
@@ -72,7 +155,9 @@ export function HeroSection() {
               <Button
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8"
-                onClick={() => window.open("https://github.com/Rupe88/TImer-Daju", "_blank")}
+                onClick={() =>
+                  window.open('https://github.com/Rupe88/TImer-Daju', '_blank')
+                }
               >
                 <Zap className="h-5 w-5 mr-2" />
                 Get NestBoost
@@ -81,14 +166,15 @@ export function HeroSection() {
                 variant="outline"
                 size="lg"
                 className="text-lg px-8 bg-transparent"
-                onClick={() => (window.location.href = "/demo")}
+                onClick={() => (window.location.href = '/demo')}
               >
                 View Demo
               </Button>
             </div>
 
             <p className="text-sm text-muted-foreground">
-              <span className="text-accent font-medium">$100 off</span> for the first 100 customers (23 left)
+              <span className="text-accent font-medium">$100 off</span> for the
+              first 100 customers (23 left)
             </p>
           </div>
 
@@ -103,7 +189,9 @@ export function HeroSection() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">NestJS</h3>
-                    <p className="text-sm text-card-foreground">Enterprise-grade framework</p>
+                    <p className="text-sm text-card-foreground">
+                      Enterprise-grade framework
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -116,7 +204,9 @@ export function HeroSection() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">2FA Auth</h3>
-                    <p className="text-sm text-card-foreground">Authenticator integration</p>
+                    <p className="text-sm text-card-foreground">
+                      Authenticator integration
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -125,11 +215,13 @@ export function HeroSection() {
               <Card className="p-6 bg-primary/5 border-primary/20 hover:border-primary/40 transition-colors">
                 <div className="space-y-3">
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Docker className="h-6 w-6 text-primary" />
+                    <Container className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground">Docker</h3>
-                    <p className="text-sm text-card-foreground">Production deployment</p>
+                    <p className="text-sm text-card-foreground">
+                      Production deployment
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -141,31 +233,22 @@ export function HeroSection() {
                     <Database className="h-6 w-6 text-accent" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">PostgreSQL</h3>
-                    <p className="text-sm text-card-foreground">TypeORM integration</p>
+                    <h3 className="font-semibold text-foreground">
+                      PostgreSQL
+                    </h3>
+                    <p className="text-sm text-card-foreground">
+                      TypeORM integration
+                    </p>
                   </div>
                 </div>
               </Card>
             </div>
 
-            {/* Code Preview */}
-            <Card className="mt-6 p-4 bg-card border-border">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <div className="h-2 w-2 rounded-full bg-accent" />
-                  <span>Ready to use</span>
-                </div>
-                <pre className="text-sm font-mono text-foreground">
-                  <code>{`git clone nestboost-starter
-npm install
-docker-compose up -d
-npm run start:dev`}</code>
-                </pre>
-              </div>
-            </Card>
+            {/* Terminal Card - Replacing the original code preview */}
+            <TerminalCard />
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
