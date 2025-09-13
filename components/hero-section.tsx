@@ -152,16 +152,16 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8"
-                onClick={() =>
-                  window.open('https://github.com/Rupe88/TImer-Daju', '_blank')
-                }
+              <a
+                href="https://chyrupesh2.gumroad.com/l/lnvkx"
+                className="gumroad-button text-black hover:bg-green-300!"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Buy NestBoost on Gumroad"
               >
-                <Zap className="h-5 w-5 mr-2" />
-                Get NestBoost
-              </Button>
+             
+                  Get NestBoost
+              </a>
               <Button
                 variant="outline"
                 size="lg"
