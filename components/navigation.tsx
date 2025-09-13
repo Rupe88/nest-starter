@@ -121,7 +121,7 @@ export function Navigation() {
             <div className="px-4">
               <Button
                 size="sm"
-                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                className="w-full bg-green-300/10 hover:bg-accent/90 text-accent-foreground"
                 onClick={() => {
                   window.open('https://github.com/Rupe88/TImer-Daju', '_blank');
                   setIsMenuOpen(false);

@@ -25,7 +25,7 @@ function TerminalCard() {
     'git clone https://github.com/nestboost/starter.git',
     'cd nestboost-starter',
     'pnpm install',
-    'docker-compose up -d',
+    'docker compose up -d',
     'pnpm run start:dev',
   ];
 
@@ -154,7 +154,7 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="https://chyrupesh2.gumroad.com/l/lnvkx"
-                className="gumroad-button text-black hover:bg-green-300!"
+                className="gumroad-button text-black hover:bg-green-300/20!"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buy NestBoost on Gumroad"
