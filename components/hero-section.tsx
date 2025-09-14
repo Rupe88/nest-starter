@@ -16,6 +16,7 @@ import {
   Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import BuyButton from './BuyButton';
 
 // Terminal Card Component
 function TerminalCard() {
@@ -152,16 +153,7 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="https://chyrupesh2.gumroad.com/l/lnvkx"
-                className="gumroad-button text-black hover:bg-green-300/20!"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Buy NestBoost on Gumroad"
-              >
-             
-                  Get NestBoost
-              </a>
+              <BuyButton />
               <Button
                 variant="outline"
                 size="lg"
