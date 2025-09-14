@@ -9,6 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
+  transpilePackages: ['dodopayments'], // 👈 add this
+};
 
-export default nextConfig
+export default nextConfig;

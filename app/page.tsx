@@ -1,19 +1,28 @@
-import { HeroSection } from "@/components/hero-section"
-import { Navigation } from "@/components/navigation"
-import { PricingSection } from "@/components/pricing-section"
-import { FAQSection } from "@/components/faq-section"
-import { DemoSection } from "@/components/demo-section"
-import { Footer } from "@/components/footer"
+import { HeroSection } from '@/components/hero-section';
+import { Navigation } from '@/components/navigation';
+import { PricingSection } from '@/components/pricing-section';
+import { FAQSection } from '@/components/faq-section';
+import { DemoSection } from '@/components/demo-section';
+import { Footer } from '@/components/footer';
+import { globalFetch } from '@/shared/utils/globalFetch';
+import { ProductListResponse } from '../types/dodo';
+import ProductList from './widgets/product-list/ui/product-list';
+const HomePage = async () => {
+  const products = await globalFetch('/api/products') as ProductListResponse[];
+console.log(products);
 
-export default function HomePage() {
+
+  console.log(products);
   return (
     <main className="min-h-screen bg-background">
-      <Navigation />
+      <ProductList products={products}/>
+      {/* <Navigation />
       <HeroSection />
       <DemoSection />
       <PricingSection />
       <FAQSection />
-      <Footer />
+      <Footer /> */}
     </main>
-  )
-}
+  );
+};
+export default HomePage;
