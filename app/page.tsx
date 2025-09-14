@@ -12,16 +12,16 @@ const HomePage = async () => {
 console.log(products);
 
 
-  console.log(products);
+//   console.log(products);
   return (
     <main className="min-h-screen bg-background">
       <ProductList products={products}/>
-      {/* <Navigation />
+      <Navigation />
       <HeroSection />
       <DemoSection />
       <PricingSection />
       <FAQSection />
-      <Footer /> */}
+      <Footer />
     </main>
   );
 };
