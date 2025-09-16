@@ -4,16 +4,16 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { globalFetch } from '@/shared/utils/globalFetch';
 import ProductCard from './product-card';
-import { ProductListResponse } from '@/types/dodo';
+import { Product, ProductListResponse } from '@/types/dodo';
 
 interface ProductListProps {
-  products: ProductListResponse[];
+  products: Product[];
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products }) => {
+const ProductList: React.FC<ProductListProps> = ({ products=[] }) => {
   const router = useRouter();
 
-  const handlePayClick = async (product: ProductListResponse) => {
+  const handlePayClick = async (product: Product) => {
     try {
       const body = await globalFetch<{ payment_link: string }>(
         '/api/checkout/one-time',
@@ -21,7 +21,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: 'chyrupesh828@gmail.com',
+            email: 'chyrupesh828@gmail.com', // currently hardcoded
             productId: product.product_id,
           }),
         }
@@ -38,18 +38,26 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
     }
   };
 
+  const nestStarterProduct = products.find(
+    (p) => p.product_id === 'pdt_38Q86HDiLR9HHeMh7Zshy'
+  );
+
+  if (!products.length) {
+    return <div>No products available</div>; // 👈 safe fallback
+  }
+
   return (
     <div>
-      {products.map((product) => (
+      {nestStarterProduct && (
         <ProductCard
-          key={product.product_id}
-          title={product.name}
-          description={product.description}
-          currency={product.currency}
-          price={product.price}
-          onPayClick={() => handlePayClick(product)}
+          key={nestStarterProduct.product_id}
+          title={nestStarterProduct.name}
+          description={nestStarterProduct.description}
+          currency={nestStarterProduct.currency}
+          price={nestStarterProduct.price}
+          onPayClick={() => handlePayClick(nestStarterProduct)}
         />
-      ))}
+      )}
     </div>
   );
 };
