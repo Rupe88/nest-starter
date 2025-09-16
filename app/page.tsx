@@ -4,16 +4,16 @@ import { PricingSection } from '@/components/pricing-section';
 import { FAQSection } from '@/components/faq-section';
 import { DemoSection } from '@/components/demo-section';
 import { Footer } from '@/components/footer';
-import { globalFetch } from '@/shared/utils/globalFetch';
-import { Product, ProductListResponse } from '../types/dodo';
-import ProductList from './widgets/product-list/ui/product-list';
+// import { globalFetch } from '@/shared/utils/globalFetch';
+// import { Product, ProductListResponse } from '../types/dodo';
+// import ProductList from './widgets/product-list/ui/product-list';
 const HomePage = async () => {
-const products = await globalFetch<Product[]>('/api/products');
+// const products = await globalFetch<Product[]>('/api/products');
 
   //   console.log(products);
   return (
     <main className="min-h-screen bg-background">
-      <ProductList products={products} />
+      {/* <ProductList products={products} /> */}
       <Navigation />
       <HeroSection />
       <DemoSection />

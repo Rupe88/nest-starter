@@ -19,7 +19,8 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { globalFetch } from '@/shared/utils/globalFetch';
-import { ProductListResponse } from '@/types/dodo';
+import { Product, ProductListResponse } from '@/types/dodo';
+import ProductList from '@/app/widgets/product-list/ui/product-list';
 
 // Product Card Component
 interface ProductCardProps {
@@ -27,68 +28,6 @@ interface ProductCardProps {
   onPayClick: (product: ProductListResponse) => void;
   loading?: boolean;
 }
-
-const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onPayClick,
-  loading = false,
-}) => {
-  return (
-    <Card className="p-6 bg-card border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-lg">
-      {/* Discount Badge */}
-      <Badge
-        variant="secondary"
-        className="w-fit mb-4 bg-accent/10 text-accent border-accent/20"
-      >
-        <Zap className="h-3 w-3 mr-1" />
-        $100 off - Limited Time
-      </Badge>
-
-      {/* Product Title */}
-      <h2 className="text-2xl font-bold text-foreground mb-3">
-        {product.name}
-      </h2>
-
-      {/* Description */}
-      <p className="text-muted-foreground mb-6 text-pretty">
-        {product.description}
-      </p>
-
-      {/* Pricing */}
-      <div className="flex items-baseline gap-3 mb-6">
-        <span className="text-3xl font-bold text-primary">
-          {product.currency}
-          {product.price}
-        </span>
-      </div>
-
-      {/* Pay Button */}
-      <Button
-        onClick={() => onPayClick(product)}
-        disabled={loading}
-        size="lg"
-        className="w-full text-lg px-8 bg-primary hover:bg-primary/90 transition-colors"
-      >
-        {loading ? (
-          <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-            Processing...
-          </>
-        ) : (
-          <>
-            <CreditCard className="h-5 w-5 mr-2" />
-            Get Instant Access
-          </>
-        )}
-      </Button>
-
-      {/* Additional Info */}
-      <p className="text-sm text-muted-foreground mt-3 text-center">
-        15 days free access • One-time payment
-      </p>
-    </Card>
-  );
-};
 
 // Terminal Card Component
 function TerminalCard() {
@@ -161,86 +100,71 @@ function TerminalCard() {
 export function HeroSection() {
   const router = useRouter();
   const [showProducts, setShowProducts] = useState(false);
-  const [products, setProducts] = useState<ProductListResponse[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [paymentLoading, setPaymentLoading] = useState<string | null>(null);
 
-  // Fetch products when showing product list
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!showProducts) return;
-
       setLoading(true);
       try {
-        console.log('🔍 Fetching products...');
-        const data = (await globalFetch(
-          '/api/products'
-        )) as ProductListResponse[];
-        console.log('📦 Products received:', data);
-        setProducts(data || []);
-      } catch (error) {
-        console.error('❌ Failed to fetch products:', error);
+        const data = await globalFetch<Product[]>('/api/products');
+        setProducts(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error(err);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProducts();
-  }, [showProducts]);
-
-  const handleGetStarted = () => {
-    console.log('🚀 Get Instant Access clicked - showing products');
-    setShowProducts(true);
-  };
-
+  }, []);
   const handleBackToHero = () => {
     setShowProducts(false);
   };
 
-  const handlePayClick = async (product: ProductListResponse) => {
-    if (!product.product_id) {
-      console.error('❌ Product ID missing:', product);
-      alert('Product ID missing. Please contact support.');
-      return;
-    }
+  //   if (!product.product_id) {
+  //     console.error('❌ Product ID missing:', product);
+  //     alert('Product ID missing. Please contact support.');
+  //     return;
+  //   }
 
-    setPaymentLoading(product.product_id);
-    console.log('💳 Initiating payment for:', product.name);
+  //   setPaymentLoading(product.product_id);
+  //   console.log('💳 Initiating payment for:', product.name);
 
-    try {
-      const body = await globalFetch<{ payment_link: string }>(
-        '/api/checkout/one-time',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: 'chyrupesh828@gmail.com',
-            productId: product.product_id,
-          }),
-        }
-      );
+  //   try {
+  //     const body = await globalFetch<{ payment_link: string }>(
+  //       '/api/checkout/one-time',
+  //       {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           email: 'chyrupesh828@gmail.com',
+  //           productId: product.product_id,
+  //         }),
+  //       }
+  //     );
 
-      console.log('📥 Payment API response:', body);
+  //     console.log('📥 Payment API response:', body);
 
-      if (body && body.payment_link) {
-        console.log('✅ Redirecting to payment:', body.payment_link);
-        window.location.href = body.payment_link;
-      } else {
-        console.error('❌ No payment link in response:', body);
-        alert('Unable to get payment link. Please try again.');
-      }
-    } catch (err) {
-      console.error('❌ Payment failed:', err);
-      alert(`Payment failed: ${err}. Please try again.`);
-    } finally {
-      setPaymentLoading(null);
-    }
-  };
+  //     if (body && body.payment_link) {
+  //       console.log('✅ Redirecting to payment:', body.payment_link);
+  //       window.location.href = body.payment_link;
+  //     } else {
+  //       console.error('❌ No payment link in response:', body);
+  //       alert('Unable to get payment link. Please try again.');
+  //     }
+  //   } catch (err) {
+  //     console.error('❌ Payment failed:', err);
+  //     alert(`Payment failed: ${err}. Please try again.`);
+  //   } finally {
+  //     setPaymentLoading(null);
+  //   }
+  // };
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-background via-card to-background">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
         {showProducts ? (
@@ -268,29 +192,6 @@ export function HeroSection() {
             </div>
 
             {/* Products Grid */}
-            {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                <span className="ml-3 text-muted-foreground">
-                  Loading products...
-                </span>
-              </div>
-            ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.product_id}
-                    product={product}
-                    onPayClick={handlePayClick}
-                    loading={paymentLoading === product.product_id}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">No products available</p>
-              </div>
-            )}
           </div>
         ) : (
           /* Original Hero Content */
@@ -353,15 +254,9 @@ export function HeroSection() {
               </Card>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  className="text-lg px-8 bg-primary hover:bg-primary/90"
-                  onClick={handleGetStarted}
-                >
-                  <CreditCard className="h-5 w-5 mr-2" />
-                  Get Instant Access
-                </Button>
+              <div className="flex flex-col sm:flex-row gap-4 z-20">
+                {loading && <p>Loading products...</p>}
+                {!loading && <ProductList products={products} />}
                 <Button
                   variant="outline"
                   size="lg"
@@ -446,8 +341,9 @@ export function HeroSection() {
                 </Card>
               </div>
 
-              {/* Terminal Card */}
-              <TerminalCard />
+              <div className="relative z-10">
+                <TerminalCard />
+              </div>
             </div>
           </div>
         )}
