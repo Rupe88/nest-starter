@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import z from 'zod';
 
 const validator = z.object({
-  email: z.string().email(), 
+  email: z.string().email(),
   productId: z.string(),
 });
 
@@ -27,12 +27,12 @@ export const POST = async (request: NextRequest) => {
       product_cart: [{ product_id: productId, quantity: 1 }],
     });
 
-    return NextResponse.json(payment, { status: 200 }); 
+    return NextResponse.json(payment, { status: 200 });
   } catch (e) {
     const dodopaymentsError = e as ApiError;
     return NextResponse.json(
-      { message: dodopaymentsError.message },
-      { status: dodopaymentsError.status }
+      { message: dodopaymentsError.message }
+      // { status: dodopaymentsError.status }
     );
   }
 };
