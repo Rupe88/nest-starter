@@ -20,7 +20,7 @@ export const POST = async (request: NextRequest) => {
 
   try {
     const payment = await dodopayments.payments.create({
-      billing: { city: '', country: 'KZ', state: '', street: '', zipcode: '' },
+      billing: { city: '', country: 'NP', state: '', street: '', zipcode: '' },
       customer: { email, name: '' },
       payment_link: true,
       return_url: process.env.DODO_PAYMENTS_RETURN_KEY!,
