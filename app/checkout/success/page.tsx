@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 export default function SuccessPage() {
   const params = useSearchParams();
   const [verified, setVerified] = useState<boolean | null>(null);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   useEffect(() => {
     const paymentId = params.get('payment_id');
     if (paymentId) {
