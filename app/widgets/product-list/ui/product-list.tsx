@@ -21,7 +21,7 @@ const ProductList: React.FC<ProductListProps> = ({ products = [] }) => {
 
     setPaymentLoading(product.product_id);
     console.log('💳 Initiating payment for:', product.name);
-console.log('Products:', products);
+// console.log('Products:', products);
 
     try {
       const body = await globalFetch<{ payment_link: string }>(

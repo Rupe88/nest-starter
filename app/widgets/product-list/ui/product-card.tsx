@@ -22,22 +22,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   loading = false,
 }) => {
   return (
-    <Card className="p-6 bg-card border-primary/20 hover:border-primary/40 transition-all duration-300 shadow-lg">
+    <Card>
       <Button
         onClick={onPayClick}
         disabled={loading}
         
         size="lg"
-        className="w-full text-lg px-8 bg-primary hover:bg-primary/90 transition-colors"
+        className=""
       >
         {loading ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+            <div/>
             Processing...
           </>
         ) : (
           <>
-            <CreditCard className="h-5 w-5 mr-2" />
+            <CreditCard/>
             Get Instant Access
           </>
         )}
