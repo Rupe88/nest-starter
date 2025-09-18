@@ -6,7 +6,7 @@ import ProductCard from './product-card';
 import { Product } from '@/types/dodo';
 
 interface ProductListProps {
-  products?: Product[]; // optional to be safer
+  products?: Product[]; 
 }
 
 const ProductList: React.FC<ProductListProps> = ({ products = [] }) => {
