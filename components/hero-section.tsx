@@ -122,45 +122,6 @@ export function HeroSection() {
     setShowProducts(false);
   };
 
-  //   if (!product.product_id) {
-  //     console.error('❌ Product ID missing:', product);
-  //     alert('Product ID missing. Please contact support.');
-  //     return;
-  //   }
-
-  //   setPaymentLoading(product.product_id);
-  //   console.log('💳 Initiating payment for:', product.name);
-
-  //   try {
-  //     const body = await globalFetch<{ payment_link: string }>(
-  //       '/api/checkout/one-time',
-  //       {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify({
-  //           email: 'chyrupesh828@gmail.com',
-  //           productId: product.product_id,
-  //         }),
-  //       }
-  //     );
-
-  //     console.log('📥 Payment API response:', body);
-
-  //     if (body && body.payment_link) {
-  //       console.log('✅ Redirecting to payment:', body.payment_link);
-  //       window.location.href = body.payment_link;
-  //     } else {
-  //       console.error('❌ No payment link in response:', body);
-  //       alert('Unable to get payment link. Please try again.');
-  //     }
-  //   } catch (err) {
-  //     console.error('❌ Payment failed:', err);
-  //     alert(`Payment failed: ${err}. Please try again.`);
-  //   } finally {
-  //     setPaymentLoading(null);
-  //   }
-  // };
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-background via-card to-background">
       {/* Background Pattern */}
