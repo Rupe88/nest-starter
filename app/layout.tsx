@@ -2,7 +2,16 @@ import type React from 'react';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
-import Script from 'next/script';
+import { connectToDB } from '@/lib/mongo';
+
+(async () => {
+  try {
+    await connectToDB();
+    console.log('⚡ Next.js startup: MongoDB is ready!');
+  } catch (err) {
+    console.error('⚡ Next.js startup: MongoDB failed', err);
+  }
+})();
 
 export const metadata: Metadata = {
   title: 'NestBoost - Ship Secure NestJS Backends Faster',
@@ -19,15 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <Suspense fallback={null}>
-          {' '}
-          {/* Load Gumroad overlay script AFTER interactive */}
-          <Script
-            src="https://gumroad.com/js/gumroad.js"
-            strategy="afterInteractive"
-          />
-          {children}
-        </Suspense>
+        <Suspense fallback={null}> {children}</Suspense>
       </body>
     </html>
   );
