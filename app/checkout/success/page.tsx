@@ -17,12 +17,20 @@ export default function CheckoutSuccess() {
     null
   );
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState(
+    'Verifying your payment...'
+  );
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Get payment ID from URL params
-  const paymentId =
+  // Get payment ID from URL or sessionStorage
+  let paymentId =
     searchParams.get('payment_id') || searchParams.get('paymentId');
+  if (!paymentId && typeof window !== 'undefined') {
+    paymentId = sessionStorage.getItem('paymentId') || '';
+  } else if (paymentId && typeof window !== 'undefined') {
+    sessionStorage.setItem('paymentId', paymentId);
+  }
 
   useEffect(() => {
     if (!paymentId) {
@@ -33,7 +41,8 @@ export default function CheckoutSuccess() {
 
     const verifyAndGenerateToken = async () => {
       try {
-        // 1️⃣ Verify payment
+        // Step 1: Verify payment
+        setLoadingMessage('Verifying your payment...');
         const verifyRes = await fetch(
           `/api/verify-payment?paymentId=${paymentId}`
         );
@@ -54,7 +63,8 @@ export default function CheckoutSuccess() {
           return;
         }
 
-        // 2️⃣ Generate short-lived download token
+        // Step 2: Generate download token
+        setLoadingMessage('Generating download link...');
         const tokenRes = await fetch('/api/generate-download-token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -62,7 +72,7 @@ export default function CheckoutSuccess() {
         });
         const tokenData = await tokenRes.json();
 
-        if (!tokenRes.ok) {
+        if (!tokenRes.ok || !tokenData.token) {
           setPaymentStatus({
             status: 'error',
             error: tokenData.error || 'Failed to generate download token',
@@ -71,11 +81,11 @@ export default function CheckoutSuccess() {
           return;
         }
 
-        // 3️⃣ Update state with download token
+        // Step 3: Update state with download token
         setPaymentStatus({ ...verifyData, downloadToken: tokenData.token });
 
-        // 4️⃣ Optional: remove payment_id from URL to avoid exposing it
-        router.replace('/checkout/success'); // URL now only shows /checkout/success
+        // Step 4: Optional: remove paymentId from URL
+        router.replace('/checkout/success');
       } catch (err) {
         console.error(err);
         setPaymentStatus({
@@ -90,12 +100,13 @@ export default function CheckoutSuccess() {
     verifyAndGenerateToken();
   }, [paymentId, router]);
 
+  // Loading spinner
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Verifying your payment...</p>
+          <p className="mt-4 text-gray-600">{loadingMessage}</p>
         </div>
       </div>
     );
@@ -103,6 +114,7 @@ export default function CheckoutSuccess() {
 
   if (!paymentStatus) return null;
 
+  // Payment successful
   if (paymentStatus.status === 'succeeded') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -133,10 +145,10 @@ export default function CheckoutSuccess() {
             )}
 
             <a
-              href="/orders"
+              href="/"
               className="block w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
             >
-              View Orders
+              Go to Home
             </a>
           </div>
         </div>
@@ -144,7 +156,7 @@ export default function CheckoutSuccess() {
     );
   }
 
-  // Pending / Processing
+  // Payment pending/processing
   if (
     paymentStatus.status === 'processing' ||
     paymentStatus.status === 'pending'
@@ -170,57 +182,58 @@ export default function CheckoutSuccess() {
     );
   }
 
-  // Payment Error
-return (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    <div className="max-w-md mx-auto text-center bg-white p-8 rounded-lg shadow-md">
-      <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-        <svg
-          className="w-8 h-8 text-red-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Download Issue</h1>
-      <p className="text-gray-600 mb-4">
-        {paymentStatus?.error ||
-          'Your download link may have expired or there was an issue with your payment.'}
-      </p>
-      <p className="text-sm text-gray-500 mb-6">
-        ⚠️ Note: Download links expire <strong>10 minutes</strong> after generation.
-        If your link has expired, please contact us at{' '}
-        <a
-          href="mailto:chyrupesh828@gmail.com"
-          className="text-blue-600 hover:underline"
-        >
-          chyrupesh828@gmail.com
-        </a>{' '}
-        for assistance.
-      </p>
-      <div className="space-y-3">
-        <button
-          onClick={() => window.location.reload()}
-          className="block w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-        >
-          Try Again
-        </button>
-        <a
-          href="/"
-          className="block w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-        >
-          Return to Home
-        </a>
+  // Payment/download error
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md mx-auto text-center bg-white p-8 rounded-lg shadow-md">
+        <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+          <svg
+            className="w-8 h-8 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          Download Issue
+        </h1>
+        <p className="text-gray-600 mb-4">
+          {paymentStatus.error ||
+            'Your download link may have expired or there was an issue with your payment.'}
+        </p>
+        <p className="text-sm text-gray-500 mb-6">
+          ⚠️ Note: Download links expire <strong>10 minutes</strong> after
+          generation. If your link has expired, please contact us at{' '}
+          <a
+            href="mailto:chyrupesh828@gmail.com"
+            className="text-blue-600 hover:underline"
+          >
+            chyrupesh828@gmail.com
+          </a>{' '}
+          for assistance.
+        </p>
+        <div className="space-y-3">
+          <button
+            onClick={() => window.location.reload()}
+            className="block w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+          <a
+            href="/"
+            className="block w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Return to Home
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 }
