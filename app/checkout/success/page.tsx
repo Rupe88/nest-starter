@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-export const dynamic = "force-dynamic"; 
+export const dynamic = 'force-dynamic';
 interface PaymentStatus {
   status: string;
   raw?: any;
@@ -139,11 +139,12 @@ export default function CheckoutSuccess() {
           </div>
           <div className="space-y-3">
             <a
-              href="/"
-              className="block w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              href={`/api/download?paymentId=${paymentId}`}
+              className="block w-full px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md text-center"
             >
-              Continue Shopping
+              Download Boilerplate
             </a>
+
             <a
               href="/orders"
               className="block w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
