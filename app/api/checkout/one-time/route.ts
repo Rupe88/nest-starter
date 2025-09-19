@@ -2,7 +2,7 @@ import { dodopayments } from '@/lib/dodo-payments';
 import { ApiError } from 'next/dist/server/api-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import z from 'zod';
-
+export const dynamic = "force-dynamic"; 
 const validator = z.object({
   email: z.string().email(),
   productId: z.string(),
