@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { connectToDB } from '@/lib/mongo';
 import { Payment } from '@/app/models/Payment';
+import crypto from 'crypto';
+import DownloadToken from '@/app/models/DownloadToken';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
@@ -11,21 +13,12 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const paymentId = searchParams.get('paymentId');
 
-    if (!paymentId) {
+    if (!paymentId)
       return NextResponse.json({ error: 'Missing paymentId' }, { status: 400 });
-    }
 
-    const DODO_API_BASE_URL = process.env.DODO_API_BASE_URL;
-    const DODO_API_KEY = process.env.DODO_PAYMENTS_API_KEY;
+    const DODO_API_BASE_URL = process.env.DODO_API_BASE_URL!;
+    const DODO_API_KEY = process.env.DODO_PAYMENTS_API_KEY!;
 
-    if (!DODO_API_BASE_URL || !DODO_API_KEY) {
-      return NextResponse.json(
-        { error: 'Server misconfiguration: missing environment variables' },
-        { status: 500 }
-      );
-    }
-
-    // Possible endpoints
     const urls = [
       `${DODO_API_BASE_URL}/v1/payments/${paymentId}`,
       `${DODO_API_BASE_URL}/payments/${paymentId}`,
@@ -43,7 +36,6 @@ export async function GET(req: Request) {
 
     let paymentData: any = null;
 
-    // Try each endpoint until successful
     for (const url of urls) {
       try {
         const res = await fetch(url, {
@@ -53,32 +45,21 @@ export async function GET(req: Request) {
           },
         });
 
-        const text = await res.text();
-        let data: any;
-
-        try {
-          data = JSON.parse(text);
-        } catch {
-          data = { raw: text };
-        }
-
-        if (res.ok && data.status) {
-          paymentData = data;
-          break;
-        }
+        if (!res.ok) continue;
+        paymentData = await res.json();
+        if (paymentData.status) break;
       } catch {
         continue;
       }
     }
 
-    if (!paymentData) {
+    if (!paymentData)
       return NextResponse.json(
         { error: 'Payment not found', paymentId },
         { status: 404 }
       );
-    }
 
-    // Save payment to MongoDB (upsert)
+    // Save to MongoDB
     await Payment.findOneAndUpdate(
       { paymentId },
       {
@@ -91,10 +72,12 @@ export async function GET(req: Request) {
       { upsert: true, new: true }
     );
 
-    return NextResponse.json({
-      status: paymentData.status,
-      raw: paymentData,
-    });
+    // Generate short-lived download token (10 minutes)
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    await DownloadToken.create({ token, paymentId, expiresAt });
+
+    return NextResponse.json({ status: paymentData.status, token });
   } catch (err: any) {
     return NextResponse.json(
       { error: 'Internal server error', message: err.message },

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
+import { connectToDB } from '@/lib/mongo';
+import DownloadToken from '@/app/models/DownloadToken';
 import fs from 'fs/promises';
 import path from 'path';
-import { connectToDB } from '@/lib/mongo';
-import { Payment } from '@/app/models/Payment';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,31 +11,19 @@ export async function GET(req: Request) {
     await connectToDB();
 
     const { searchParams } = new URL(req.url);
-    const paymentId = searchParams.get('paymentId');
+    const token = searchParams.get('token');
 
-    if (!paymentId) {
-      return NextResponse.json({ error: 'Missing paymentId' }, { status: 400 });
-    }
+    if (!token)
+      return NextResponse.json({ error: 'Missing token' }, { status: 400 });
 
-    // ✅ Check MongoDB first
-    const paymentRecord = await Payment.findOne({ paymentId });
-
-    if (!paymentRecord || paymentRecord.status !== 'succeeded') {
+    const tokenDoc = await DownloadToken.findOne({ token });
+    if (!tokenDoc || tokenDoc.expiresAt < new Date())
       return NextResponse.json(
-        { error: 'Payment not verified or not successful' },
+        { error: 'Token expired or invalid' },
         { status: 403 }
       );
-    }
 
-    // Payment succeeded → serve file
     const filePath = path.join(process.cwd(), 'assets', 'boilerplate.zip');
-
-    try {
-      await fs.access(filePath);
-    } catch {
-      return NextResponse.json({ error: 'File not found' }, { status: 404 });
-    }
-
     const fileBuffer = await fs.readFile(filePath);
 
     return new NextResponse(fileBuffer, {
