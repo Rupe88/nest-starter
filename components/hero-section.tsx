@@ -17,6 +17,8 @@ import {
   Check,
   CreditCard,
   ArrowLeft,
+  Star,
+  Users,
 } from 'lucide-react';
 import { globalFetch } from '@/shared/utils/globalFetch';
 import { Product, ProductListResponse } from '@/types/dodo';
@@ -27,6 +29,117 @@ interface ProductCardProps {
   product: ProductListResponse;
   onPayClick: (product: ProductListResponse) => void;
   loading?: boolean;
+}
+
+// Integrated CTA and Social Proof Component
+function CTASection({
+  products,
+  loading,
+}: {
+  products: Product[];
+  loading: boolean;
+}) {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const testimonials = [
+    {
+      name: 'Alex Chen',
+      role: 'Senior Developer',
+      avatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face&auto=format',
+      text: 'Perfect boilerplate for production apps',
+    },
+    {
+      name: 'Sarah Kim',
+      role: 'Tech Lead',
+      avatar: 'https://avatars.githubusercontent.com/u/105001135?v=4',
+      text: 'Saved me weeks of setup time!',
+    },
+    {
+      name: 'Mike Rodriguez',
+      role: 'Full Stack Dev',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face&auto=format',
+      text: 'Amazing authentication system!',
+    },
+    {
+      name: 'Emily Johnson',
+      role: 'CTO',
+      avatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face&auto=format',
+      text: 'Our go-to starter for all projects',
+    },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="space-y-6 flex space-x-40 ">
+      {/* Main CTA Button */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        {loading && (
+          <div className="flex items-center justify-center p-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">
+              Loading products...
+            </span>
+          </div>
+        )}
+        {!loading && <ProductList products={products} />}
+      </div>
+
+      {/* Enhanced Social Proof Card */}
+      <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+          {/* Left: Avatar Stack & Rating */}
+          <div className="flex flex-col sm:flex-row lg:flex-col items-center sm:items-start lg:items-center gap-4">
+            {/* Avatar Stack */}
+            <div className="flex items-center">
+              <div className="flex -space-x-3">
+                {testimonials.map((user, index) => (
+                  <div
+                    key={index}
+                    className="relative w-12 h-12 rounded-full border-3 border-background overflow-hidden hover:scale-110 transition-all duration-300 cursor-pointer shadow-lg"
+                    style={{ zIndex: 10 - index }}
+                  >
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {index === currentTestimonial && (
+                      <div className="absolute inset-0 ring-3 ring-green-500 ring-offset-2 ring-offset-background rounded-full animate-pulse" />
+                    )}
+                  </div>
+                ))}
+                <div className="w-12 h-12 rounded-full border-3 border-background bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                  +18
+                </div>
+              </div>
+              <div className="space-x-7 flex flex-col items-center sm:items-start lg:items-center gap-2">
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className="w-5 h-5 fill-yellow-400 text-yellow-400 drop-shadow-sm"
+                    />
+                  ))}
+                  <span className="text-lg font-bold text-foreground ml-2">
+                    5.0
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // Terminal Card Component
@@ -118,6 +231,7 @@ export function HeroSection() {
     };
     fetchProducts();
   }, []);
+
   const handleBackToHero = () => {
     setShowProducts(false);
   };
@@ -162,7 +276,7 @@ export function HeroSection() {
               <div className="space-y-4">
                 <Badge variant="secondary" className="w-fit">
                   <Clock className="h-3 w-3 mr-1" />
-                  15 Days Free Access
+                  Only $40 for the first 100 customers
                 </Badge>
 
                 <h1 className="text-4xl lg:text-6xl font-bold text-balance leading-tight">
@@ -214,22 +328,11 @@ export function HeroSection() {
                 </div>
               </Card>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 z-20">
-                {loading && <p>Loading products...</p>}
-                {!loading && <ProductList products={products} />}
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="text-lg px-8 bg-transparent"
-                  onClick={() => (window.location.href = '/demo')}
-                >
-                  View Demo
-                </Button>
-              </div>
+              {/* CTA Section with Integrated Social Proof */}
+              <CTASection products={products} loading={loading} />
 
               <p className="text-sm text-muted-foreground">
-                <span className="text-accent font-medium">$100 off</span> for
+                <span className="text-accent font-medium">Only $40 </span> for
                 the first 100 customers (23 left)
               </p>
             </div>
