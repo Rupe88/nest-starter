@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+
 export const dynamic = 'force-dynamic';
+
 interface PaymentStatus {
   status: string;
   raw?: any;
@@ -28,9 +30,9 @@ export default function CheckoutSuccess() {
       return;
     }
 
-    // Verify payment status
     const verifyPayment = async () => {
       try {
+        // Call our backend verify-payment API
         const response = await fetch(
           `/api/verify-payment?paymentId=${paymentId}`
         );
@@ -44,8 +46,8 @@ export default function CheckoutSuccess() {
             error: data.error || 'Failed to verify payment',
           });
         }
-      } catch (error) {
-        console.error('Payment verification error:', error);
+      } catch (err) {
+        console.error('Payment verification error:', err);
         setPaymentStatus({
           status: 'error',
           error: 'Network error during payment verification',
@@ -144,7 +146,6 @@ export default function CheckoutSuccess() {
             >
               Download Boilerplate
             </a>
-
             <a
               href="/orders"
               className="block w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
@@ -203,7 +204,6 @@ export default function CheckoutSuccess() {
     );
   }
 
-  // Error or failed payment
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md mx-auto text-center bg-white p-8 rounded-lg shadow-md">

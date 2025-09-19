@@ -1,25 +1,14 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
-interface IPayment {
-  paymentId: string;
-  status: 'succeeded' | 'pending' | 'failed';
-  amount: number;
-  currency: string;
-  email?: string; // optional
-  createdAt: Date;
-}
-
-const paymentSchema = new Schema<IPayment>({
-  paymentId: { type: String, required: true, unique: true },
-  status: {
-    type: String,
-    enum: ['succeeded', 'pending', 'failed'],
-    required: true,
+const PaymentSchema = new Schema(
+  {
+    paymentId: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    productId: { type: String, required: true },
+    status: { type: String, required: true }, // succeeded, pending, failed
+    raw: { type: Object },
   },
-  amount: { type: Number, required: true },
-  currency: { type: String, required: true },
-  email: { type: String },
-  createdAt: { type: Date, default: Date.now },
-});
+  { timestamps: true }
+);
 
-export default models.Payment || model<IPayment>('Payment', paymentSchema);
+export const Payment = models.Payment || model('Payment', PaymentSchema);

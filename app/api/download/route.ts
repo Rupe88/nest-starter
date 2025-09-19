@@ -1,10 +1,15 @@
-// api/download/route.ts
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { connectToDB } from '@/lib/mongo';
+import { Payment } from '@/app/models/Payment';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
+    await connectToDB();
+
     const { searchParams } = new URL(req.url);
     const paymentId = searchParams.get('paymentId');
 
@@ -12,21 +17,25 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Missing paymentId' }, { status: 400 });
     }
 
-    // ✅ Call your verify-payment API internally
-    const verifyRes = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-payment?paymentId=${paymentId}`
-    );
-    const paymentStatus = await verifyRes.json();
+    // ✅ Check MongoDB first
+    const paymentRecord = await Payment.findOne({ paymentId });
 
-    if (!verifyRes.ok || paymentStatus.status !== 'succeeded') {
+    if (!paymentRecord || paymentRecord.status !== 'succeeded') {
       return NextResponse.json(
-        { error: 'Payment not successful', details: paymentStatus },
+        { error: 'Payment not verified or not successful' },
         { status: 403 }
       );
     }
 
     // Payment succeeded → serve file
     const filePath = path.join(process.cwd(), 'assets', 'boilerplate.zip');
+
+    try {
+      await fs.access(filePath);
+    } catch {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+
     const fileBuffer = await fs.readFile(filePath);
 
     return new NextResponse(fileBuffer, {
@@ -37,7 +46,6 @@ export async function GET(req: Request) {
       },
     });
   } catch (err: any) {
-    console.error('Download API error:', err);
     return NextResponse.json(
       { error: 'Download error', message: err.message },
       { status: 500 }
