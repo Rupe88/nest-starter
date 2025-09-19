@@ -17,13 +17,16 @@ import { Product } from '@/types/dodo';
 import ProductList from '@/app/widgets/product-list/ui/product-list';
 
 export function PricingSection() {
-  const [notify, setNotify] = useState(false);
-
-  // First card product state
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch products for Starter card (HeroSection style)
+  // Toast state
+  const [toast, setToast] = useState<{ show: boolean; message: string }>({
+    show: false,
+    message: '',
+  });
+
+  // Fetch products for Starter card
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -40,18 +43,13 @@ export function PricingSection() {
     fetchProducts();
   }, []);
 
-  const handleComingSoon = () => {
-    setNotify(true);
-    setTimeout(() => setNotify(false), 2500);
-  };
-
-  const handleSocialLogin = (provider: 'google' | 'github') => {
-    // This will redirect to your OAuth endpoint
-    window.location.href = `/api/auth/${provider}`;
+  const showToast = (message: string) => {
+    setToast({ show: true, message });
+    setTimeout(() => setToast({ show: false, message: '' }), 2500);
   };
 
   return (
-    <section id="pricing" className="py-24 bg-secondary/30">
+    <section id="pricing" className="py-24 bg-secondary/30 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
           <Badge variant="secondary" className="w-fit mx-auto">
@@ -119,7 +117,6 @@ export function PricingSection() {
                 </div>
               </div>
             </CardContent>
-
             <CardFooter className="flex flex-col gap-4">
               {loading && <p>Loading products...</p>}
               {!loading && <ProductList products={products} />}
@@ -167,9 +164,8 @@ export function PricingSection() {
             <CardFooter>
               <Button
                 className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
-                onClick={handleComingSoon}
+                onClick={() => showToast('Pro package coming soon 🚀')}
               >
-                <Zap className="h-4 w-4 mr-2" />
                 Buy Pro
               </Button>
             </CardFooter>
@@ -214,18 +210,18 @@ export function PricingSection() {
             <CardFooter>
               <Button
                 className="w-full bg-primary hover:bg-primary/90"
-                onClick={handleComingSoon}
+                onClick={() => showToast('Enterprise package coming soon 🚀')}
               >
-                <Zap className="h-4 w-4 mr-2" />
                 Buy Enterprise
               </Button>
             </CardFooter>
           </Card>
         </div>
 
-        {notify && (
-          <div className="mt-6 text-center text-yellow-500 font-medium animate-pulse">
-            Coming Soon 🚀
+        {/* Toast Notification */}
+        {toast.show && (
+          <div className="fixed bottom-8 right-8 text-accent-foreground px-6 py-3 rounded-lg shadow-lg animate-slide-in bg-primary">
+            {toast.message}
           </div>
         )}
       </div>
